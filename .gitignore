@@ -1,0 +1,9 @@
+# Игнорирование системных папок
+.DS_Store
+
+# Игнорирование notebook checkpoints
+.ipynb_checkpoints/
+
+# Игнорирование временных файлов Python
+__pycache__/
+*.pyc
