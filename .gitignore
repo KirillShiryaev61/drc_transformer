@@ -1,9 +1,19 @@
-# Игнорирование системных папок
+# OS
 .DS_Store
+Thumbs.db
 
-# Игнорирование notebook checkpoints
-.ipynb_checkpoints/
-
-# Игнорирование временных файлов Python
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual envs
+venv/
+.venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
