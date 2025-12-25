@@ -131,7 +131,13 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
         # Обработка остальных параметров (coef, dry, method)
         self.coef_ = self._expand_param(self.coef, n_features, default=0.5)
 
-        # Валидация параметре coef, должно быть coef > 0
+        # Валидация параметра threshold, должен быть конечным числом
+        for i, h in enumerate(self.threshold_):
+            if not np.isfinite(h):
+                col_name = self.feature_names_in_[i]
+                raise ValueError(f"Параметр threshold для колонки '{col_name}' = {h}, threshold должен быть конечным числом.")
+
+        # Валидация параметра coef, должно быть coef > 0
         for i, c in enumerate(self.coef_):
             if c <= 0:
                 col_name = self.feature_names_in_[i]
