@@ -18,7 +18,8 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
         coef : (int, float, list, dict) должен быть coef > 0, default 0.5.
             Для method='linear' — коэффициент линейного сжатия.
             Для method='power' — степень сжатия.
-            Для method='log' — масштабирующий коэффициент логарифмического сжатия.   
+            Для method='log' — масштабирующий коэффициент логарифмического сжатия. 
+            Для method='clip' — неактивен.
         
         side : (str, list, dict), default 'max'.
             Сторона сжатия.
@@ -26,7 +27,7 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
         
         method : (str, list, dict), default 'power'.
             Метод компрессии.
-            Доступные методы — {'linear', 'power', 'log'}
+            Доступные методы — {'linear', 'power', 'log', 'clip'}
         
         dry : (int, float, list, dict) должен быть в диапозоне [0, 1], default 0.
             Доля исходных значений в результате (0 = полная компрессия, 
@@ -54,26 +55,13 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
             compressed[mask] = threshold + diff * coef
         
         elif method == 'power':
-            if coef >= 1:
-                compressed[mask] = threshold + np.power(diff, coef)
-            else:
-                if diff.min() <= 1:
-                    small_diff = diff <= 1
-                    large_diff = diff > 1
-                    small_mask = mask.copy()
-                    small_mask[mask] = small_diff
-                    large_mask = mask.copy()
-                    large_mask[mask] = large_diff
-                
-                    if small_diff.any():      
-                        compressed[small_mask] = threshold + np.log1p(diff[small_diff])
-                    if large_diff.any():
-                        compressed[large_mask] = threshold + np.power(diff[large_diff], coef)
-                else:
-                    compressed[mask] = threshold + np.power(diff, coef)
+            compressed[mask] = threshold + np.power(diff + 1, coef) - 1
     
-        else:
+        elif method == 'log':
             compressed[mask] = threshold + np.log1p(diff) * coef
+
+        else: # method == 'clip'
+            compressed[mask] = threshold
     
         return dry * data + (1 - dry) * compressed
 
@@ -178,6 +166,16 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
             data = -data
             return data
 
+    # Вспомогательная функция _list_if_pair
+    def _list_if_pair(self, param):
+        '''
+        Преобразование заданных параметров
+        '''
+        if isinstance(param, (list, tuple)) and len(param) == 2:
+            return [param]
+        else:
+            return param
+
     # Вспомогательная функция _expand_param
     def _expand_param(self, param, n_features, default):
         '''
@@ -236,12 +234,31 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
 
         n_features = X_values.shape[1]
 
+        # Преобразование параметров если признак один
+        if n_features == 1 and self.side == 'both':
+            
+            # threshold
+            if self.threshold is not None and not isinstance(self.threshold, dict):
+                self.threshold = self._list_if_pair(self.threshold)
+            
+            # coef
+            if not isinstance(self.coef, dict):
+                self.coef = self._list_if_pair(self.coef)
+
+            # method
+            if not isinstance(self.method, dict):
+                self.method = self._list_if_pair(self.method)
+
+            # dry
+            if not isinstance(self.dry, dict):
+                self.dry = self._list_if_pair(self.dry)
+
         # Обработка параметра coef
         self.coef_ = self._expand_param(self.coef, n_features, default=0.5)
         
         # Валидация параметра coef, должно быть coef > 0
         for i, c in enumerate(self.coef_):
-            if isinstance(c, list) or isinstance(c, tuple):
+            if isinstance(c, (list, tuple)):
                 for j in c:
                     if not np.isfinite(j):
                         col_name = self.feature_names_in_[i]
@@ -262,13 +279,13 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
 
         # Валидация параметра method, должен быть linear, power или log
         for i, m in enumerate(self.method_):
-            if isinstance(m, list) or isinstance(m, tuple):
+            if isinstance(m, (list, tuple)):
                 for j in m:
-                    if j not in ['linear', 'power', 'log']:
+                    if j not in ['linear', 'power', 'log', 'clip']:
                         col_name = self.feature_names_in_[i]
                         raise ValueError(f"Неподдерживаемый метод: '{col_name}'='{j}'. Допустимые значения: 'linear', 'power', 'log'")
             else:
-                if m not in ['linear', 'power', 'log']:
+                if m not in ['linear', 'power', 'log', 'clip']:
                     col_name = self.feature_names_in_[i]
                     raise ValueError(f"Неподдерживаемый метод: '{col_name}'='{m}'. Допустимые значения: 'linear', 'power', 'log'")
         
@@ -286,7 +303,7 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
         
         # Валидация параметра dry, должно быть [0, 1]
         for i, d in enumerate(self.dry_):
-            if isinstance(d, list) or isinstance(d, tuple):
+            if isinstance(d, (list, tuple)):
                 for j in d:
                     if not np.isfinite(j):
                         col_name = self.feature_names_in_[i]
@@ -356,7 +373,7 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
 
         # Валидация параметра threshold, должен быть конечным числом
         for i, h in enumerate(self.threshold_):
-            if isinstance(h, list) or isinstance(h, tuple):
+            if isinstance(h, (list, tuple)):
                 for j in h:
                     if not np.isfinite(j):
                         col_name = self.feature_names_in_[i]
