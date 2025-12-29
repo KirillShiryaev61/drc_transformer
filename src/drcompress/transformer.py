@@ -2,10 +2,10 @@
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.utils.validation import check_is_fitted
+from sklearn.utils.validation import check_is_fitted, validate_data
 
 # Код трансформера
-class DRCTransformer(BaseEstimator, TransformerMixin):
+class DRCTransformer(TransformerMixin, BaseEstimator):
 
     # Инициализация трансформера
     def __init__(self, threshold=None, coef=0.5, side='max', method='power', dry=0.0):
@@ -69,7 +69,7 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
     def _side_compress(self, data, threshold, coef, method, dry):
     
         # Расчет минимального
-        if not np.all(data > 0):
+        if data.min() < 0:
 
             # Избавляемся от отрицательных значений
             minimal = abs(data.min())
@@ -98,7 +98,7 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
     # Функция компрессии
     def _compress_array(self, data, threshold, coef, side, method, dry):
 
-        data = np.asarray(data, dtype=np.float64)
+        data = np.array(data, dtype=np.float64, copy=True)
 
         # Сжатие максимальных значений
         if side == 'max':
@@ -187,12 +187,6 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
             как значение по умолчанию
             '''
             return [default] * n_features
-        elif isinstance(param, dict):
-            '''
-            Берем значения из словаря, если значение отсутствует,
-            берем значение по умолчанию
-            '''
-            return [param.get(name, default) for name in self.feature_names_in_]
         elif np.isscalar(param):
             '''
             Если параметр задан одним числом, распределяем 
@@ -214,8 +208,10 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
         '''
         Возвращение имен входных признаков
         '''
-        check_is_fitted(self, 'feature_names_in_')
-        return np.array(self.feature_names_in_, dtype=object)
+        if input_features is not None:
+            return np.array(input_features, dtype=object)
+        
+        return np.array([f"col_{i}" for i in range(self.n_features_in_)], dtype=object)
             
     # Метод fit()
     def fit(self, X, y=None):
@@ -223,101 +219,76 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
         Обучение трансформера.
         Определяем количество колонок и значения параметров для них
         '''
-        # Сохраняем информацию о колонках, если X — DataFrame
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_list()
-            X_values = X.values
-        else:
-            X_values = np.asarray(X)
-            # Если вход — массив, даём имена "заглушки"
-            self.feature_names_in_ = [f'col_{i}' for i in range(X_values.shape[1])]
-
-        n_features = X_values.shape[1]
+        # Валидация данных
+        X_values = validate_data(
+            self, X,
+            reset=True,
+            ensure_all_finite=True,
+            ensure_2d=True,
+            dtype=np.float64,
+        )
 
         # Преобразование параметров если признак один
-        if n_features == 1 and self.side == 'both':
-            
-            # threshold
-            if self.threshold is not None and not isinstance(self.threshold, dict):
-                self.threshold = self._list_if_pair(self.threshold)
-            
-            # coef
-            if not isinstance(self.coef, dict):
-                self.coef = self._list_if_pair(self.coef)
-
-            # method
-            if not isinstance(self.method, dict):
-                self.method = self._list_if_pair(self.method)
-
-            # dry
-            if not isinstance(self.dry, dict):
-                self.dry = self._list_if_pair(self.dry)
+        if self.n_features_in_ == 1 and self.side == 'both':
+            self.threshold = self._list_if_pair(self.threshold)
+            self.coef = self._list_if_pair(self.coef)
+            self.method = self._list_if_pair(self.method)
+            self.dry = self._list_if_pair(self.dry)
 
         # Обработка параметра coef
-        self.coef_ = self._expand_param(self.coef, n_features, default=0.5)
+        self.coef_ = self._expand_param(self.coef, self.n_features_in_, default=0.5)
         
         # Валидация параметра coef, должно быть coef > 0
         for i, c in enumerate(self.coef_):
             if isinstance(c, (list, tuple)):
                 for j in c:
                     if not np.isfinite(j):
-                        col_name = self.feature_names_in_[i]
-                        raise ValueError(f"Параметр coef для колонки '{col_name}'={j}, должен быть конечным числом.")
+                        raise ValueError(f"Параметр coef для колонки ({i}) должен быть конечным числом.")
                     elif j <= 0:
-                        col_name = self.feature_names_in_[i]
-                        raise ValueError(f"Параметр coef для колонки '{col_name}'={j}, должен быть coef > 0.")
+                        raise ValueError(f"Параметр coef для колонки ({i}) должен быть coef > 0.")
             else: 
                 if not np.isfinite(c):
-                    col_name = self.feature_names_in_[i]
-                    raise ValueError(f"Параметр coef для колонки '{col_name}'={c}, должен быть конечным числом.")
+                    raise ValueError(f"Параметр coef для колонки ({i}) должен быть конечным числом.")
                 elif c <= 0:
-                    col_name = self.feature_names_in_[i]
-                    raise ValueError(f"Параметр coef для колонки '{col_name}'={c}, должен быть coef > 0.")
+                    raise ValueError(f"Параметр coef для колонки ({i}) должен быть coef > 0.")
 
         # Обработка параметра method
-        self.method_ = self._expand_param(self.method, n_features, default='power')
+        self.method_ = self._expand_param(self.method, self.n_features_in_, default='power')
 
         # Валидация параметра method, должен быть linear, power или log
         for i, m in enumerate(self.method_):
             if isinstance(m, (list, tuple)):
                 for j in m:
                     if j not in ['linear', 'power', 'log', 'clip']:
-                        col_name = self.feature_names_in_[i]
-                        raise ValueError(f"Неподдерживаемый метод: '{col_name}'='{j}'. Допустимые значения: 'linear', 'power', 'log'")
+                        raise ValueError(f"Неподдерживаемый метод в колонке ({i}), допустимые значения: 'linear', 'power', 'log', 'clip'")
             else:
                 if m not in ['linear', 'power', 'log', 'clip']:
-                    col_name = self.feature_names_in_[i]
-                    raise ValueError(f"Неподдерживаемый метод: '{col_name}'='{m}'. Допустимые значения: 'linear', 'power', 'log'")
+                    raise ValueError(f"Неподдерживаемый метод в колонке ({i}), допустимые значения: 'linear', 'power', 'log', 'clip'")
         
         # Обработка параметра side
-        self.side_ = self._expand_param(self.side, n_features, default='max')
+        self.side_ = self._expand_param(self.side, self.n_features_in_, default='max')
         
         # Валидация параметра side, должен быть max, min или both
         for i, s in enumerate(self.side_):
             if s not in ['max', 'min', 'both']:
-                col_name = self.feature_names_in_[i]
-                raise ValueError(f"Неподдерживаемый метод: '{col_name}'='{s}'. Допустимые значения: 'max', 'min', 'both'")
+                raise ValueError(f"Неподдерживаемый метод в колонке ({i}), допустимые значения: 'max', 'min', 'both'")
                 
         # Обработка параметра dry
-        self.dry_ = self._expand_param(self.dry, n_features, default=0.0)
+        self.dry_ = self._expand_param(self.dry, self.n_features_in_, default=0.0)
         
         # Валидация параметра dry, должно быть [0, 1]
         for i, d in enumerate(self.dry_):
             if isinstance(d, (list, tuple)):
                 for j in d:
                     if not np.isfinite(j):
-                        col_name = self.feature_names_in_[i]
-                        raise ValueError(f"Параметр dry для колонки '{col_name}'={j}, должен быть конечным числом.")
+                        raise ValueError(f"Параметр dry для колонки ({i}), должен быть конечным числом.")
                     elif not (0 <= j <= 1):
-                        col_name = self.feature_names_in_[i]
-                        raise ValueError(f"Параметр dry для колонки '{col_name}'={j}, должен быть в диапазоне [0, 1].")
+                        raise ValueError(f"Параметр dry для колонки ({i}), должен быть в диапазоне [0, 1].")
             else:
                 if not np.isfinite(d):
-                    col_name = self.feature_names_in_[i]
-                    raise ValueError(f"Параметр dry для колонки '{col_name}'={d}, должен быть конечным числом.")
+                    raise ValueError(f"Параметр dry для колонки ({i}), должен быть конечным числом.")
                 elif not (0 <= d <= 1):
-                    col_name = self.feature_names_in_[i]
-                    raise ValueError(f"Параметр dry для колонки '{col_name}'={d}, должен быть в диапазоне [0, 1].")
+                    raise ValueError(f"Параметр dry для колонки ({i}), должен быть в диапазоне [0, 1].")
 
         # Обработка threshold
         if self.threshold is None:
@@ -334,54 +305,33 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
                 elif side == 'min':
                     self.threshold_.append(np.min(X_values[:, i]))
                 else: # side == 'both'
-                    self.threshold_.append([np.min(X_values[:, i]), np.max(X_values[:, i])])
-            
-        elif isinstance(self.threshold, dict):
-            '''
-            Берем значения из словаря, если значения 
-            отсутствует, берем максимальное, минимальное 
-            или оба значения признака в зависимости от 
-            указанного параметра side
-            '''
-            self.threshold_ = []
-            for i, name in enumerate(self.feature_names_in_):
-                side = self.side_[i]
-                if name in self.threshold:
-                    self.threshold_.append(self.threshold[name])
-                else:
-                    if side == 'max':
-                        self.threshold_.append(np.max(X_values[:, i]))
-                    elif side == 'min':
-                        self.threshold_.append(np.min(X_values[:, i]))
-                    else: # side == 'both'
-                        self.threshold_.append([np.min(X_values[:, i]), np.max(X_values[:, i])])
-            
+                    self.threshold_.append([np.min(X_values[:, i]), np.max(X_values[:, i])])    
+        
         elif np.isscalar(self.threshold):
             '''
             Если порог задан одним числом, распределяем 
             это значение на все признаки
             '''
-            self.threshold_ = [self.threshold] * n_features
+            self.threshold_ = [self.threshold] * self.n_features_in_
+        
         else:
             '''
             Если значения заданы массивом или списком,
             распределяем значения по порядку
             '''
             self.threshold_ = list(self.threshold)
-            if len(self.threshold_) != n_features:
-                raise ValueError(f'Длина параметра не совпадает с числом признаков ({n_features}).')
+            if len(self.threshold_) != self.n_features_in_:
+                raise ValueError(f'Длина параметра не совпадает с числом признаков ({self.n_features_in_}).')
 
         # Валидация параметра threshold, должен быть конечным числом
         for i, h in enumerate(self.threshold_):
             if isinstance(h, (list, tuple)):
                 for j in h:
                     if not np.isfinite(j):
-                        col_name = self.feature_names_in_[i]
-                        raise ValueError(f"Параметр threshold для колонки '{col_name}' = {j}, threshold должен быть конечным числом.")
+                        raise ValueError(f"Параметр threshold для колонки ({i}), threshold должен быть конечным числом.")
             else:
                 if not np.isfinite(h):
-                    col_name = self.feature_names_in_[i]
-                    raise ValueError(f"Параметр threshold для колонки '{col_name}' = {h}, threshold должен быть конечным числом.")
+                    raise ValueError(f"Параметр threshold для колонки ({i}), threshold должен быть конечным числом.")
 
         return self     
 
@@ -392,15 +342,19 @@ class DRCTransformer(BaseEstimator, TransformerMixin):
         '''
         # Проверка, обучен ли трансформер
         check_is_fitted(self)
-        
-        X_values = np.asarray(X)
+
+        # Валидация данных
+        X_values = validate_data(
+            self, X,
+            reset=False,
+            ensure_all_finite=True,
+            ensure_2d=True,
+            dtype=np.float64,
+        )
+
         X_compressed = X_values.copy()
 
-        for i in range(X_values.shape[1]):
-
-            if np.isnan(X_values[:, i]).any():
-                col_name = self.feature_names_in_[i]
-                raise ValueError(f"Колонка '{col_name}' имеет пропуски в значениях.")
+        for i in range(self.n_features_in_):
             
             X_compressed[:, i] = self._compress_array(
                 data=X_values[:, i],
