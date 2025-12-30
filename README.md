@@ -17,6 +17,5 @@ pip install git+https://github.com/KirillShiryaev61/drc_transformer.git
 ## Импорт
 
 ```
-# Трансформер для использования в пайплайне
 from drcompress.transformer import DRCTransformer
 ```

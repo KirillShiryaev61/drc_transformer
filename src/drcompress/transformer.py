@@ -12,24 +12,24 @@ class DRCTransformer(TransformerMixin, BaseEstimator):
         '''
         Аргументы:
         
-        threshold : (int, float, list, dict) должен быть threshold > 0, default None.
+        threshold : (int, float, list) должен быть threshold > 0, default None.
             Порог срабатывания компрессии (абсолютное значение).     
         
-        coef : (int, float, list, dict) должен быть coef > 0, default 0.5.
+        coef : (int, float, list) должен быть coef > 0, default 0.5.
             Для method='linear' — коэффициент линейного сжатия.
             Для method='power' — степень сжатия.
             Для method='log' — масштабирующий коэффициент логарифмического сжатия. 
             Для method='clip' — неактивен.
         
-        side : (str, list, dict), default 'max'.
+        side : (str, list), default 'max'.
             Сторона сжатия.
             Доступные методы — {'max', 'min', 'both'}
         
-        method : (str, list, dict), default 'power'.
+        method : (str, list), default 'power'.
             Метод компрессии.
             Доступные методы — {'linear', 'power', 'log', 'clip'}
         
-        dry : (int, float, list, dict) должен быть в диапозоне [0, 1], default 0.
+        dry : (int, float, list) должен быть в диапозоне [0, 1], default 0.
             Доля исходных значений в результате (0 = полная компрессия, 
             1 = без изменений). 
         '''
@@ -206,11 +206,18 @@ class DRCTransformer(TransformerMixin, BaseEstimator):
     # Метод get_feature_names_out()
     def get_feature_names_out(self, input_features=None):
         '''
-        Возвращение имен входных признаков
+        Возвращает имена выходных признаков.
+        Поддерживает имена из pandas DataFrame.
         '''
+        # Если переданы input_features
         if input_features is not None:
             return np.array(input_features, dtype=object)
-        
+    
+        # Если трансформер обучен и получил имена при fit
+        if hasattr(self, "feature_names_in_") and self.feature_names_in_ is not None:
+            return np.array(self.feature_names_in_, dtype=object)
+    
+        # Fallback: обобщённые имена
         return np.array([f"col_{i}" for i in range(self.n_features_in_)], dtype=object)
             
     # Метод fit()
