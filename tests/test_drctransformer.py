@@ -61,6 +61,55 @@ class TestDRCTransformer:
         assert X_comp[2, 0] == 8.0
         assert X_comp[1, 0] == X[1, 0]
 
+    def test_mix_compression_both_side(self):
+        """
+        Смешанная компрессия:
+            Минимальные значения — method='linear', coef=0.5;
+            Максимальные значения — method='power', coef=0.5. 
+        """
+        X = np.array([[-10.0], [0.0], [10.0]])
+
+        drc = DRCTransformer(threshold=[-5.0, 7.0], 
+                             coef=[0.5, 0.5], 
+                             method=['linear', 'power'], 
+                             side='both',
+                             dry=0.0)
+        X_comp = drc.fit_transform(X)
+
+        assert X_comp[0, 0] > X[0, 0]
+        assert X_comp[0, 0] == -7.5
+        assert X_comp[2, 0] < X[2, 0]
+        assert X_comp[2, 0] == 8.0
+        assert X_comp[1, 0] == X[1, 0]
+
+    def test_compression_ndarray(self):
+        """Компрессия разных признаков массива одновременно"""
+        X = np.array([[0, -45, -10], 
+                      [1,   0,   0], 
+                      [10, 15,  10]])
+
+        drc = DRCTransformer(threshold=[5, 0, [-7, 7]], 
+                             coef=0.5, 
+                             method=['linear', ['clip', 'power'], 'power'], 
+                             side=['max', 'both', 'both'], 
+                             dry=0.0)
+        X_comp = drc.fit_transform(X)
+
+        # Первый признак
+        assert X_comp[0, 0] == 0.0
+        assert X_comp[1, 0] == 1.0
+        assert X_comp[2, 0] == 7.5
+
+        # Второй признак
+        assert X_comp[0, 1] == 0.0
+        assert X_comp[1, 1] == 0.0
+        assert X_comp[2, 1] == 3.0
+
+        # Третий признак
+        assert X_comp[0, 2] == -8.0
+        assert X_comp[1, 2] == 0.0
+        assert X_comp[2, 2] == 8.0
+
     def test_dry_blend(self):
         """Проверка параметра dry"""
         X = np.array([[10.0]])
@@ -75,8 +124,11 @@ class TestDRCTransformer:
         expected = (X[0, 0] + X_full[0, 0]) / 2
         assert np.isclose(X_half, expected)
 
-    def test_auto_threshold(self):
-        """Проверка автоматического порога (threshold=None)"""
+    def test_auto_threshold_side_max(self):
+        """
+        Проверка автоматического порога (threshold=None)
+        при side='max'
+        """
         X = np.array([[1.0], [2.0], [10.0]])
 
         drc = DRCTransformer(threshold=None, side='max')
@@ -86,7 +138,42 @@ class TestDRCTransformer:
         assert drc.threshold_[0] == 10.0
 
         X_comp = drc.transform(X)
-        # При threshold = max ничего не должно сжиматься
+        # Ничего не должно сжиматься
+        assert np.allclose(X_comp, X)
+
+    def test_auto_threshold_side_min(self):
+        """
+        Проверка автоматического порога (threshold=None)
+        при side='min'
+        """
+        X = np.array([[1.0], [2.0], [10.0]])
+
+        drc = DRCTransformer(threshold=None, side='min')
+        drc.fit(X)
+
+        # Порог должен быть равен минимуму
+        assert drc.threshold_[0] == 1.0
+
+        X_comp = drc.transform(X)
+        # Ничего не должно сжиматься
+        assert np.allclose(X_comp, X)
+
+    def test_auto_threshold_side_both(self):
+        """
+        Проверка автоматического порога (threshold=None)
+        при side='both'
+        """
+        X = np.array([[1.0], [2.0], [10.0]])
+
+        drc = DRCTransformer(threshold=None, side='both')
+        drc.fit(X)
+
+        # Пороги должны быть равны максимуму и минимуму
+        assert drc.threshold_[0][0] == 1.0
+        assert drc.threshold_[0][1] == 10.0
+
+        X_comp = drc.transform(X)
+        # Ничего не должно сжиматься
         assert np.allclose(X_comp, X)
 
     def test_get_feature_names_out_with_dataframe(self):
