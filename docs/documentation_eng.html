@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>documentation_rus</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>documentation_eng</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7510,7 +7510,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=661e0fbf-b2eb-4e09-81a0-fa332757d175">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=88e1a32e-0fe1-43f6-b240-3f6a1d4f591e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7519,52 +7519,52 @@ a.anchor-link {
 <h1 id="DRCTransformer">DRCTransformer<a class="anchor-link" href="#DRCTransformer">¶</a></h1><hr/>
 <p><strong><em>class</em> drcompress.transformer.DRCTransformer(threshold=<code>None</code>, coef=<code>0.5</code>, method=<code>'power'</code>, side=<code>'max'</code>, dry=<code>0.0</code>)</strong></p>
 <hr/>
-<p>Избавляйтесь от влияния выбросов в данных или от <code>OOD</code> <em>(out of distribution)</em>, как на тренировочных, так и на тестовых данных.</p>
-<p>Появление данного метода вдохновлено историей появления первых компрессоров аудио-сигнала на радио-станциях, которые должны были оберегать дорогую аппаратуру от неожиданных всеплесков сигнала на аудио дорожках.</p>
-<p><em>* Трансформер полностью совместим с библиотекой <strong>Scikit-Learn</strong> и распрастроняется по лицензии <strong>MIT</strong>.</em></p>
+<p>Eliminate the influence of outliers in data, or <code>OOD</code> <em>(out of distribution)</em>, in both training and test data.</p>
+<p>This method was inspired by the history of the first audio signal compressors on radio stations, which were designed to protect expensive equipment from unexpected signal surges on audio tracks.</p>
+<p><em>* The transformer is fully compatible with the <strong>Scikit-Learn</strong> library and is distributed under the <strong>MIT-license</strong>.</em></p>
 <hr/>
-<p><strong>Параметры:</strong></p>
+<p><strong>Parameters:</strong></p>
 <blockquote>
-<p>Если значение параметра передано, как <code>None</code>, то будет использовано значение параметра по умолчанию, кроме <code>threshold</code>, его случай описан в описании параметра.</p>
-<p>Если значение параметра передано, как <code>int</code> или <code>float</code>, то оно будет использовано для всех признаков, которые попадают в входные данные трансформера, так и на все стороны распределения значений признаков, при <strong>side=<code>'both'</code></strong>.</p>
-<p>Чтобы при <strong>side=<code>'both'</code></strong> передать для каждой стороны разные значения параметра, необходимо передать значения в формате <code>list</code> или <code>tuple</code>:</p>
+<p>If the parameter value is passed as <code>None</code>, the default parameter value will be used, except for <code>threshold</code>, whose case is described in the parameter description.</p>
+<p>If the parameter value is passed as <code>int</code> or <code>float</code>, it will be used for all features that fall within the transformer's input data, as well as for all sides of the feature value distribution, when <strong>side=<code>'both'</code></strong>.</p>
+<p>To pass different parameter values for each side with <strong>side=<code>'both'</code></strong>, you must pass the values in the format <code>list</code> or <code>tuple</code>:</p>
 <ul>
 <li><code>[param_min, param_max]</code></li>
 <li><code>(param_min, param_max)</code></li>
 </ul>
-<p>Чтобы передать для каждого признака соответствующее значения параметра, их необходимо передать в том же порядке и в формате <code>list</code> или <code>tuple</code>:</p>
+<p>To pass the corresponding parameter values for each feature, they must be passed in the same order and in the <code>list</code> or <code>tuple</code> format:</p>
 <ul>
 <li><code>[2, 5, (2, 6), [8, 10]]</code></li>
 <li><code>(2, 5, (2, 6), [8, 10])</code></li>
 </ul>
 </blockquote>
 <p><strong>threshold : <em>(int, float, list, tuple), default=None</em></strong></p>
-<p>Порог срабатывания трансформера <em>(требуется абсолютное значение)</em>, при передачи значения <code>None</code> порог устанавливается автоматически:</p>
+<p>Transformer activation threshold <em>(absolute value required)</em>, when passing the value <code>None</code>, the threshold is set automatically:</p>
 <ul>
-<li>При <strong>side=<code>'max'</code></strong> —  максимальное значение каждого признака выборки, на которой обучен трансформер;</li>
-<li>При <strong>side=<code>'min'</code></strong> —  минимальное значение каждого признака выборки, на которой обучен трансформер;</li>
-<li>При <strong>side=<code>'both'</code></strong> —  максимальное и минимальное значения каждого признака выборки, на которой обучен трансформер.</li>
+<li>When <strong>side=<code>'max'</code></strong> —  the maximum value of each feature of the sample on which the transformer was trained;</li>
+<li>When <strong>side=<code>'min'</code></strong> —  the minimum value of each feature in the sample on which the transformer was trained;</li>
+<li>When <strong>side=<code>'both'</code></strong> —  the maximum and minimum values of each feature of the sample on which the transformer was trained.</li>
 </ul>
 <p><strong>coef : <em>(int, float, list, tuple), default=0.5</em></strong></p>
-<p><em>* Параметр должен быть больше</em> <code>0</code>.</p>
+<p><em>* The parameter must be greater than</em> <code>0</code>.</p>
 <ul>
-<li>Для <strong>method=<code>'linear'</code></strong> — коэффициент линейного компрессирования;</li>
-<li>Для <strong>method=<code>'power'</code></strong> — степень компрессирования;</li>
-<li>Для <strong>method=<code>'log'</code></strong> — масштабирующий коэффициент логарифмического компрессирования;</li>
-<li>Для <strong>method=<code>'clip'</code></strong> — неактивен.</li>
+<li>For <strong>method=<code>'linear'</code></strong> — linear compression ratio;</li>
+<li>For <strong>method=<code>'power'</code></strong> — сompression factor raised to a power;</li>
+<li>For <strong>method=<code>'log'</code></strong> — scaling factor for logarithmic compression;</li>
+<li>For <strong>method=<code>'clip'</code></strong> — inactive.</li>
 </ul>
 <p><strong>side : <em>(str, list), default='max'</em></strong></p>
-<p>Сторона сжатия распределения значений. Доступные методы:</p>
+<p>Compression side of value distribution. Available methods:</p>
 <ul>
-<li><strong><code>'max'</code></strong> — трансформер обрабатывает максимальные значения распределения;</li>
-<li><strong><code>'min'</code></strong> — трансформер обрабатывает минимальные значения распределения;</li>
-<li><strong><code>'both'</code></strong> — трансформер обрабатывает, как максимальные, так и минимальные значения распределения.</li>
+<li><strong><code>'max'</code></strong> — the transformer processes the maximum values of the distribution;</li>
+<li><strong><code>'min'</code></strong> — the transformer processes the minimum values of the distribution.;</li>
+<li><strong><code>'both'</code></strong> — the transformer processes both the maximum and minimum values of the distribution.</li>
 </ul>
 <p><strong>method : <em>(str, list, tuple), default='power'</em></strong></p>
-<p>Предполагается 4 метода преобразования значений, доступные методы:</p>
-<p><em>* Все формулы описаны для варианта <strong>side=<code>'max'</code></strong></em></p>
+<p>There are 4 methods for converting values, the available methods are:</p>
+<p><em>* All formulas are described for the <strong>side=<code>'max'</code></strong> option.</em></p>
 <ul>
-<li><strong><code>'linear'</code></strong> — линейное преобразования значений;</li>
+<li><strong><code>'linear'</code></strong> — linear transformation of values;</li>
 </ul>
 $$
 f(x) = 
@@ -7573,7 +7573,7 @@ x, &amp; x \leq \text{threshold} \\
 \text{threshold} + \text{coef} \cdot (x - \text{threshold}), &amp; x &gt; \text{threshold}
 \end{cases}
 $$<ul>
-<li><strong><code>'power'</code></strong> — степенное преобразование значений;</li>
+<li><strong><code>'power'</code></strong> — transformation of values by raising to a power;</li>
 </ul>
 $$
 f(x) = 
@@ -7582,7 +7582,7 @@ x, &amp; x \leq \text{threshold} \\
 \text{threshold} + (x - \text{threshold} - 1)^\text{coef} + 1 , &amp; x &gt; \text{threshold}
 \end{cases}
 $$<ul>
-<li><strong><code>'log'</code></strong> — логарифмическое преобразование значений;</li>
+<li><strong><code>'log'</code></strong> — logarithmic transformation of values;</li>
 </ul>
 $$
 f(x) = 
@@ -7591,7 +7591,7 @@ x, &amp; x \leq \text{threshold} \\
 \text{threshold} + \text{coef} \cdot \text{ln}(x - \text{threshold} + 1), &amp; x &gt; \text{threshold}
 \end{cases}
 $$<ul>
-<li><strong><code>'clip'</code></strong> — замена значений, которые превысили <strong>threshold</strong>, на значение <strong>threshold</strong>.</li>
+<li><strong><code>'clip'</code></strong> — replacing values that exceed <strong>threshold</strong> with the value <strong>threshold</strong>.</li>
 </ul>
 $$
 f(x) = 
@@ -7600,34 +7600,34 @@ x, &amp; x \leq \text{threshold} \\
 \text{threshold}, &amp; x &gt; \text{threshold}
 \end{cases}
 $$<p><strong>dry : <em>(int, float, list, tuple), default=0.0</em></strong></p>
-<p><em>* Параметр должен быть в диапозоне</em> <code>[0, 1]</code>.</p>
-<p>Доля исходных значений в результате (<code>0.0</code> = полная компрессия, <code>1.0</code> = без изменений).
-После преобразования значений расчитывается средневзвешенное значение для исходных данных и преобразованных.</p>
+<p><em>* The parameter must be within the range</em> <code>[0, 1]</code>.</p>
+<p>The proportion of the original values in the result (<code>0.0</code> = full compression, <code>1.0</code> = no change).
+After converting the values, the weighted average value is calculated for the original and compressed data.</p>
 $$
 \text{dry} \cdot Original + (1 - \text{dry}) \cdot Compressed
 $$<hr/>
-<p><strong>Атрибуты:</strong></p>
+<p><strong>Attributes:</strong></p>
 <p><strong>threshold_ : <em>(int, float, list, tuple)</em></strong></p>
-<p>Значение или значения порогов срабатывания трансформера для каждого признака.</p>
+<p>The value or values of the transformer trip thresholds for each feature.</p>
 <p><strong>coef_ : <em>(int, float, list, tuple)</em></strong></p>
-<p>Значение или значения коэффициентов для каждого признака и выбранного для него метода компрессии.</p>
+<p>The value or values of the coefficients for each feature and the compression method selected for it.</p>
 <p><strong>side_ : <em>(str, list)</em></strong></p>
-<p>Значение или значения выбранной стороны для каждого признака, которую будет обрабатывать трансформер.</p>
+<p>The value or values of the selected side for each feature that will be processed by the transformer.</p>
 <p><strong>method_ : <em>(str, list, tuple)</em></strong></p>
-<p>Значение или значения выбранного метода компрессии для каждого признака, которым будет обрабатывать значения трансформер.</p>
+<p>The value or values of the selected compression method for each feature that the transformer will process.</p>
 <p><strong>dry_ : <em>(int, float, list, tuple)</em></strong></p>
-<p>Значение или значения соотношения оригинального и преобразованного сигнала для каждого признака.</p>
+<p>The value or values of the ratio of the original and transformed signals for each feature.</p>
 <p><strong>n_features_in_ : <em>int</em></strong></p>
-<p>Количество признаков, на которых обучен трансформер.</p>
+<p>Number of features seen during fit.</p>
 <p><strong>feature_names_in_ : <em>ndarray of shape (n_features_in_,)</em></strong></p>
-<p>Названия признаков, которые были в данных во время обучения трансформера. Определяются только в том случае, если признаки имеют названия, которые являются строками.</p>
+<p>Names of features seen during fit. Defined only when <code>X</code> has feature names that are all strings.</p>
 <hr/>
-<p><strong>Заметки:</strong></p>
-<p>Данный трансформер не работает с <strong><em>NaN</em></strong>, будет сгенерирована ошибка.</p>
+<p><strong>Notes:</strong></p>
+<p>This transformer does not work with <strong><em>NaN</em></strong>, an error will be generated.</p>
 <hr/>
-<p><strong>Примеры:</strong></p>
+<p><strong>Examples:</strong></p>
 <blockquote>
-<p><strong>Базовая компрессия:</strong></p>
+<p><strong>Basic compression:</strong></p>
 </blockquote>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="o">&gt;&gt;&gt;</span><span class="kn">from</span> <span class="nn">drcompress</span> <span class="kn">import</span> <span class="n">DRCTransformer</span>
@@ -7644,7 +7644,7 @@ $$<hr/>
  <span class="p">[</span><span class="mf">8.</span><span class="p">]]</span>
 </pre></div>
 <blockquote>
-<p><strong>Смешанная компрессия:</strong></p>
+<p><strong>Mixed compression:</strong></p>
 </blockquote>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="o">&gt;&gt;&gt;</span><span class="kn">from</span> <span class="nn">drcompress</span> <span class="kn">import</span> <span class="n">DRCTransformer</span>
@@ -7661,7 +7661,7 @@ $$<hr/>
  <span class="p">[</span> <span class="mf">8.</span> <span class="p">]]</span>
 </pre></div>
 <blockquote>
-<p><strong>Компрессия нескольких признаков одновременно:</strong></p>
+<p><strong>Compression of multiple features:</strong></p>
 </blockquote>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="o">&gt;&gt;&gt;</span><span class="kn">from</span> <span class="nn">drcompress</span> <span class="kn">import</span> <span class="n">DRCTransformer</span>
@@ -7688,93 +7688,93 @@ $$<hr/>
 </pre></div>
 <hr/>
 <p><strong>fit(<em>X, y=None</em>)</strong></p>
-<p>Расчет и валидация значений параметров.</p>
-<p><strong><em>Параметры:</em></strong></p>
+<p>Compute and validation of parameter values.</p>
+<p><strong><em>Parameters:</em></strong></p>
 <blockquote>
 <p><strong>X : <em>(array-like, sparse matrix) of shape (n_samples, n_features)</em></strong></p>
-<p>Данные, которые необходмо использовать для обучения трансформера.</p>
+<p>Data that must be used to train the transformer.</p>
 <p><strong>y : <em>None</em></strong></p>
-<p>Игнорируется.</p>
+<p>Ignored.</p>
 </blockquote>
-<p><strong><em>Возвращает:</em></strong></p>
+<p><strong><em>Returns:</em></strong></p>
 <blockquote>
 <p><strong>self : <em>object</em></strong></p>
-<p>Обученный трансформер.</p>
+<p>Fitted transformer.</p>
 </blockquote>
 <hr/>
 <p><strong>fit_transform(<em>X, y=None</em>)</strong></p>
-<p>Обучение трансформера на данных <strong>X</strong> и их преобразование, <strong>y</strong> игнорируется.</p>
-<p><strong><em>Параметры:</em></strong></p>
+<p>Fit to data, then transform it.</p>
+<p><strong><em>Parameters:</em></strong></p>
 <blockquote>
 <p><strong>X : <em>array-like, sparse matrix of shape (n_samples, n_features)</em></strong></p>
-<p>Входные данные.</p>
+<p>Input samples.</p>
 <p><strong>y : <em>array-like of shape (n_samples,) or (n_samples, n_outputs), default=None</em></strong></p>
-<p>Значения таргета <em>(Игнорируются трансформером)</em>.</p>
+<p>Target values <em>(None for unsupervised transformations)</em>.</p>
 </blockquote>
-<p><strong><em>Возвращает:</em></strong></p>
+<p><strong><em>Returns:</em></strong></p>
 <blockquote>
 <p><strong>X_compressed : <em>ndarray array of shape (n_samples, n_features_compressed)</em></strong></p>
-<p>Преобразованный массив.</p>
+<p>Transformed array.</p>
 </blockquote>
 <hr/>
 <p><strong>get_feature_names_out(<em>input_features=None</em>)</strong></p>
-<p>Получить имена признаков, которые были получены для обучения трансформера.</p>
-<p><strong><em>Параметры:</em></strong></p>
+<p>Get output feature names for transformation.</p>
+<p><strong><em>Parameters:</em></strong></p>
 <blockquote>
 <p><strong>input_features : <em>array-like of str or None, default=None</em></strong></p>
-<p>Названия признаков.</p>
-<p>Если <strong>input_features=<em>None</em></strong>, тогда <strong>feature_names_in_</strong> будет использовать те имена, что были у признаков в входных данных. Если <strong>feature_names_in_</strong> не определен, тогда будут сгенерированы имена: <code>["col_0", "col_1", ..., "col_(n_features_in_ - 1)"]</code>.</p>
-<p>Если <strong>input_features</strong> является массивом, то длина <strong>input_features</strong> должна совпадать с длиной <strong>feature_names_in_</strong>, если <strong>feature_names_in_</strong> определен.</p>
+<p>Input features.</p>
+<p>If <strong>input_features=<em>None</em></strong>, then <strong>feature_names_in_</strong> is used as feature names in. If <strong>feature_names_in_</strong> is not defined, then the following input feature names are generated: <code>["col_0", "col_1", ..., "col_(n_features_in_ - 1)"]</code>.</p>
+<p>If <strong>input_features</strong> is an array-like, then <strong>input_features</strong> must match <strong>feature_names_in_</strong> if <strong>feature_names_in_</strong> is defined.</p>
 </blockquote>
-<p><strong><em>Возвращает:</em></strong></p>
+<p><strong><em>Returns:</em></strong></p>
 <blockquote>
 <p><strong>feature_names_out : <em>ndarray of str objects</em></strong></p>
-<p>То, что подается в входные данные.</p>
+<p>Same as input features.</p>
 </blockquote>
 <hr/>
 <p><strong>get_params(<em>deep=True</em>)</strong></p>
-<p>Параметры, которые были заданы при инициализации трансформера.</p>
-<p><strong><em>Параметры:</em></strong></p>
+<p>Get parameters for this estimator.</p>
+<p><strong><em>Parameters:</em></strong></p>
 <blockquote>
 <p><strong>deep : <em>bool, default=True</em></strong></p>
-<p>Если <strong><em>True</em></strong>, вернет параметры для этого оценщика и содержащихся в нем подобъектов, которые являются оценщиками.</p>
+<p>If <strong><em>True</em></strong>, will return the parameters for this estimator and contained subobjects that are estimators.</p>
 </blockquote>
-<p><strong><em>Возвращает:</em></strong></p>
+<p><strong><em>Returns:</em></strong></p>
 <blockquote>
 <p><strong>params : <em>dict</em></strong></p>
-<p>Имена параметров, сопоставленные с их значениями.</p>
+<p>Parameter names mapped to their values..</p>
 </blockquote>
 <hr/>
 <p><strong>set_output(<em>transform=None</em>)</strong></p>
-<p>Установить выходной контейнер.</p>
-<p><strong><em>Параметры:</em></strong></p>
+<p>Set output container.</p>
+<p><strong><em>Parameters:</em></strong></p>
 <blockquote>
 <p><strong>transform : <em>('default', 'pandas', 'polars'), default=None</em></strong></p>
-<p>Настройте вывод для <strong>transform</strong> и <strong>fit_transform</strong>.</p>
+<p>Configure output of transform and fit_transform.</p>
 <ul>
-<li><code>'default'</code> — формат вывода по умолчанию трансформатора</li>
-<li><code>'pandas'</code> — выходные данные в формате <strong>DataFrame</strong>;</li>
-<li><code>'polars'</code> — выходные данные в формате <strong>Polars</strong>;</li>
-<li><code>None</code> — конфигурация трансформации не изменилась.</li>
+<li><code>'default'</code> — default output format of a transformer;</li>
+<li><code>'pandas'</code> — <strong>DataFrame</strong> output;</li>
+<li><code>'polars'</code> — <strong>Polars</strong> output;</li>
+<li><code>None</code> — transform configuration is unchanged.</li>
 </ul>
 </blockquote>
-<p><strong><em>Возвращает:</em></strong></p>
+<p><strong><em>Returns:</em></strong></p>
 <blockquote>
 <p><strong>self : <em>estimator instance</em></strong></p>
-<p>Экземпляр оценщика.</p>
+<p>Estimator instance.</p>
 </blockquote>
 <hr/>
 <p><strong>transform(<em>X</em>)</strong></p>
-<p>Преобразование данных.</p>
-<p><strong><em>Параметры:</em></strong></p>
+<p>Data transformation.</p>
+<p><strong><em>Parameters:</em></strong></p>
 <blockquote>
 <p><strong>X : <em>array-like, sparse matrix of shape (n_samples, n_features)</em></strong></p>
-<p>Входные данные для преобразования.</p>
+<p>Input data for transformation.</p>
 </blockquote>
-<p><strong><em>Возвращает:</em></strong></p>
+<p><strong><em>Returns:</em></strong></p>
 <blockquote>
 <p><strong>X_compressed : <em>ndarray array of shape (n_samples, n_features_compressed)</em></strong></p>
-<p>Преобразованный массив.</p>
+<p>Transformed array.</p>
 </blockquote>
 </div>
 </div>

@@ -64,14 +64,16 @@ pip install git+https://github.com/KirillShiryaev61/drc_transformer.git
 >>>from drcompress import DRCTransformer
 
 >>>pipeline = Pipeline([
-    ('drc', DRCTransformer(threshold=95)),
-    ('model', RandomForestRegressor())])
+       ('drc', DRCTransformer(threshold=95)),
+       ('model', RandomForestRegressor())
+   ])
 
 >>>pipeline.fit(X_train, y_train)
 ```
 
 ## Documentation
 
+🔗 [Documentation_ENG](https://kirillshiryaev61.github.io/drc_transformer/documentation_eng.html)
 🔗 [Documentation_RUS](https://kirillshiryaev61.github.io/drc_transformer/documentation_rus.html)
 
 ## Testing
