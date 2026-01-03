@@ -12,10 +12,10 @@ class DRCTransformer(TransformerMixin, BaseEstimator):
         '''
         Аргументы:
         
-        threshold : (int, float, list) должен быть threshold > 0, default None.
+        threshold : (int, float, list, tuple), default None.
             Порог срабатывания компрессии (абсолютное значение).     
         
-        coef : (int, float, list) должен быть coef > 0, default 0.5.
+        coef : (int, float, list, tuple) должен быть coef > 0, default 0.5.
             Для method='linear' — коэффициент линейного сжатия.
             Для method='power' — степень сжатия.
             Для method='log' — масштабирующий коэффициент логарифмического сжатия. 
@@ -25,11 +25,11 @@ class DRCTransformer(TransformerMixin, BaseEstimator):
             Сторона сжатия.
             Доступные методы — {'max', 'min', 'both'}
         
-        method : (str, list), default 'power'.
+        method : (str, list, tuple), default 'power'.
             Метод компрессии.
             Доступные методы — {'linear', 'power', 'log', 'clip'}
         
-        dry : (int, float, list) должен быть в диапозоне [0, 1], default 0.
+        dry : (int, float, list, tuple) должен быть в диапозоне [0, 1], default 0.
             Доля исходных значений в результате (0 = полная компрессия, 
             1 = без изменений). 
         '''
