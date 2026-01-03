@@ -7546,7 +7546,7 @@ a.anchor-link {
 <li>При <strong>side=<code>'both'</code></strong> —  максимальное и минимальное значения каждого признака выборки, на которой обучен трансформер.</li>
 </ul>
 <p><strong>coef : <em>(int, float, list, tuple), default=0.5</em></strong></p>
-<p><em>*Гиперпараметр должен быть больше</em> <code>0</code>.</p>
+<p><em>* Гиперпараметр должен быть больше</em> <code>0</code>.</p>
 <ul>
 <li>Для <strong>method=<code>'linear'</code></strong> — коэффициент линейного компрессирования;</li>
 <li>Для <strong>method=<code>'power'</code></strong> — степень компрессирования;</li>
@@ -7562,7 +7562,7 @@ a.anchor-link {
 </ul>
 <p><strong>method : <em>(str, list, tuple), default='power'</em></strong></p>
 <p>Предполагается 4 метода преобразования значений, доступные методы:</p>
-<p><em>*Все формулы описаны для варианта <strong>side=<code>'max'</code></strong></em></p>
+<p><em>* Все формулы описаны для варианта <strong>side=<code>'max'</code></strong></em></p>
 <ul>
 <li><strong><code>'linear'</code></strong> — линейное преобразования значений;</li>
 </ul>
@@ -7600,7 +7600,7 @@ x, &amp; x \leq \text{threshold} \\
 \text{threshold}, &amp; x &gt; \text{threshold}
 \end{cases}
 $$<p><strong>dry : <em>(int, float, list, tuple), default=0.0</em></strong></p>
-<p><em>*Гиперпараметр должен быть в диапозоне</em> <code>[0, 1]</code>.</p>
+<p><em>* Гиперпараметр должен быть в диапозоне</em> <code>[0, 1]</code>.</p>
 <p>Доля исходных значений в результате (<code>0.0</code> = полная компрессия, <code>1.0</code> = без изменений).
 После преобразования значений расчитывается средневзвешенное значение для исходных данных и преобразованных.</p>
 $$
@@ -7616,7 +7616,8 @@ $$<hr/>
 <p><strong>method_ : <em>(str, list, tuple)</em></strong></p>
 <p>Значение или значения выбранного метода компрессии для каждого признака, которым будет обрабатывать значения трансформер.</p>
 <p><strong>dry_ : <em>(int, float, list, tuple)</em></strong></p>
-<p><strong>n_features_in_ : *int</strong>*</p>
+<p>Значение или значения соотношения оригинального и преобразованного сигнала для каждого признака.</p>
+<p><strong>n_features_in_ : <em>int</em></strong></p>
 <p>Количество признаков, на которых обучен трансформер.</p>
 <p><strong>feature_names_in_ : <em>ndarray of shape (n_features_in_,)</em></strong></p>
 <p>Названия признаков, которые были в данных во время обучения трансформера. Определяются только в том случае, если признаки имеют названия, которые являются строками.</p>
