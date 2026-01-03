@@ -7517,11 +7517,11 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="DRCTransformer">DRCTransformer<a class="anchor-link" href="#DRCTransformer">¶</a></h1><hr/>
-<p>*<strong>class* drcompress.transformer.DRCTransformer(threshold=<code>None</code>, coef=<code>0.5</code>, method=<code>'power'</code>, side=<code>'max'</code>, dry=<code>0.0</code>)</strong></p>
+<p><strong><em>class</em> drcompress.transformer.DRCTransformer(threshold=<code>None</code>, coef=<code>0.5</code>, method=<code>'power'</code>, side=<code>'max'</code>, dry=<code>0.0</code>)</strong></p>
 <hr/>
 <p>Избавляйтесь от влияния выбросов в данных или от <code>OOD</code> <em>(out of distribution)</em>, как на тренировочных, так и на тестовых данных.</p>
 <p>Появление данного метода вдохновлено историей появления первых компрессоров аудио-сигнала на радио-станциях, которые должны были оберегать дорогую аппаратуру от неожиданных всеплесков сигнала на аудио дорожках.</p>
-<p>** Трансформер полностью совместим с библиотекой <strong>Scikit-Learn</strong> и распрастроняется по лицензии <strong>MIT</strong>.*</p>
+<p><em>* Трансформер полностью совместим с библиотекой <strong>Scikit-Learn</strong> и распрастроняется по лицензии <strong>MIT</strong>.</em></p>
 <hr/>
 <p><strong>Параметры:</strong></p>
 <blockquote>
@@ -7538,31 +7538,31 @@ a.anchor-link {
 <li><code>(2, 5, (2, 6), [8, 10])</code></li>
 </ul>
 </blockquote>
-<p><strong>threshold : *(int, float, list, tuple), default=None</strong>*</p>
+<p><strong>threshold : <em>(int, float, list, tuple), default=None</em></strong></p>
 <p>Порог срабатывания трансформера <em>(требуется абсолютное значение)</em>, при передачи значения <code>None</code> порог устанавливается автоматически:</p>
 <ul>
 <li>При <strong>side=<code>'max'</code></strong> —  максимальное значение каждого признака выборки, на которой обучен трансформер;</li>
 <li>При <strong>side=<code>'min'</code></strong> —  минимальное значение каждого признака выборки, на которой обучен трансформер;</li>
 <li>При <strong>side=<code>'both'</code></strong> —  максимальное и минимальное значения каждого признака выборки, на которой обучен трансформер.</li>
 </ul>
-<p><strong>coef : *(int, float, list, tuple), default=0.5</strong>*</p>
-<p>**Гиперпараметр должен быть больше* <code>0</code>.</p>
+<p><strong>coef : <em>(int, float, list, tuple), default=0.5</em></strong></p>
+<p><em>*Гиперпараметр должен быть больше</em> <code>0</code>.</p>
 <ul>
 <li>Для <strong>method=<code>'linear'</code></strong> — коэффициент линейного компрессирования;</li>
 <li>Для <strong>method=<code>'power'</code></strong> — степень компрессирования;</li>
 <li>Для <strong>method=<code>'log'</code></strong> — масштабирующий коэффициент логарифмического компрессирования;</li>
 <li>Для <strong>method=<code>'clip'</code></strong> — неактивен.</li>
 </ul>
-<p><strong>side : *(str, list), default='max'</strong>*</p>
+<p><strong>side : <em>(str, list), default='max'</em></strong></p>
 <p>Сторона сжатия распределения значений. Доступные методы:</p>
 <ul>
 <li><strong><code>'max'</code></strong> — трансформер обрабатывает максимальные значения распределения;</li>
 <li><strong><code>'min'</code></strong> — трансформер обрабатывает минимальные значения распределения;</li>
 <li><strong><code>'both'</code></strong> — трансформер обрабатываем, как максимальные, так и минимальные значения распределения.</li>
 </ul>
-<p><strong>method : *(str, list, tuple), default='power'</strong>*</p>
+<p><strong>method : <em>(str, list, tuple), default='power'</em></strong></p>
 <p>Предполагается 4 метода преобразования значений, доступные методы:</p>
-<p>**Все формулы описаны для варианта <strong>side=<code>'max'</code></strong>*</p>
+<p><em>*Все формулы описаны для варианта <strong>side=<code>'max'</code></strong></em></p>
 <ul>
 <li><strong><code>'linear'</code></strong> — линейное преобразования значений;</li>
 </ul>
@@ -7599,30 +7599,30 @@ f(x) =
 x, &amp; x \leq \text{threshold} \\
 \text{threshold}, &amp; x &gt; \text{threshold}
 \end{cases}
-$$<p><strong>dry : *(int, float, list, tuple), default=0.0</strong>*</p>
-<p>**Гиперпараметр должен быть в диапозоне* <code>[0, 1]</code>.</p>
+$$<p><strong>dry : <em>(int, float, list, tuple), default=0.0</em></strong></p>
+<p><em>*Гиперпараметр должен быть в диапозоне</em> <code>[0, 1]</code>.</p>
 <p>Доля исходных значений в результате (<code>0.0</code> = полная компрессия, <code>1.0</code> = без изменений).
 После преобразования значений расчитывается средневзвешенное значение для исходных данных и преобразованных.</p>
 $$
 \text{dry} \cdot Original + (1 - \text{dry}) \cdot Compressed
 $$<hr/>
 <p><strong>Атрибуты:</strong></p>
-<p><strong>threshold_ : *(int, float, list, tuple)</strong>*</p>
+<p><strong>threshold_ : <em>(int, float, list, tuple)</em></strong></p>
 <p>Значение или значения порогов срабатывания трансформера для каждого признака.</p>
-<p><strong>coef_ : *(int, float, list, tuple)</strong>*</p>
+<p><strong>coef_ : <em>(int, float, list, tuple)</em></strong></p>
 <p>Значние или значения коэффициентов для каждого признака и выбранного для него метода компрессии.</p>
-<p><strong>side_ : *(str, list)</strong>*</p>
+<p><strong>side_ : <em>(str, list)</em></strong></p>
 <p>Значение или значения выбранной стороны для каждого признака, которую будет обрабатывать трансформер.</p>
-<p><strong>method_ : *(str, list, tuple)</strong>*</p>
+<p><strong>method_ : <em>(str, list, tuple)</em></strong></p>
 <p>Значение или значения выбранного метода компрессии для каждого признака, которым будет обрабатывать значения трансформер.</p>
-<p><strong>dry_ : *(int, float, list, tuple)</strong>*</p>
+<p><strong>dry_ : <em>(int, float, list, tuple)</em></strong></p>
 <p><strong>n_features_in_ : *int</strong>*</p>
 <p>Количество признаков, на которых обучен трансформер.</p>
-<p><strong>feature_names_in_ : *ndarray of shape (n_features_in_,)</strong>*</p>
+<p><strong>feature_names_in_ : <em>ndarray of shape (n_features_in_,)</em></strong></p>
 <p>Названия признаков, которые были в данных во время обучения трансформера. Определяются только в том случае, если признаки имеют названия, которые являются строками.</p>
 <hr/>
 <p><strong>Заметки:</strong></p>
-<p>Данный трансформер не работает с *<strong>NaN</strong>*, будет сгенерирована ошибка.</p>
+<p>Данный трансформер не работает с <strong><em>NaN</em></strong>, будет сгенерирована ошибка.</p>
 <hr/>
 <p><strong>Примеры:</strong></p>
 <blockquote>
@@ -7688,72 +7688,72 @@ $$<hr/>
 <hr/>
 <p><strong>fit(<em>X, y=None</em>)</strong></p>
 <p>Расчет и валидация значений параметров.</p>
-<p>*<strong>Параметры:</strong>*</p>
+<p><strong><em>Параметры:</em></strong></p>
 <blockquote>
-<p><strong>X : *(array-like, sparse matrix) of shape (n_samples, n_features)</strong>*</p>
+<p><strong>X : <em>(array-like, sparse matrix) of shape (n_samples, n_features)</em></strong></p>
 <p>Данные, которые необходмо использовать для обучения трансформера.</p>
-<p><strong>y : *None</strong>*</p>
+<p><strong>y : <em>None</em></strong></p>
 <p>Игнорируется.</p>
 </blockquote>
-<p>*<strong>Возвращает:</strong>*</p>
+<p><strong><em>Возвращает:</em></strong></p>
 <blockquote>
-<p><strong>self : *object</strong>*</p>
+<p><strong>self : <em>object</em></strong></p>
 <p>Обученный трансформер.</p>
 </blockquote>
 <hr/>
 <p><strong>fit_transform(<em>X, y=None</em>)</strong></p>
 <p>Обучение трансформера на данных <strong>X</strong> и их преобразование, <strong>y</strong> игнорируется.</p>
-<p>*<strong>Параметры:</strong>*</p>
+<p><strong><em>Параметры:</em></strong></p>
 <blockquote>
-<p><strong>X : *array-like, sparse matrix of shape (n_samples, n_features)</strong>*</p>
+<p><strong>X : <em>array-like, sparse matrix of shape (n_samples, n_features)</em></strong></p>
 <p>Входные данные.</p>
-<p><strong>y : *array-like of shape (n_samples,) or (n_samples, n_outputs), default=None</strong>*</p>
+<p><strong>y : <em>array-like of shape (n_samples,) or (n_samples, n_outputs), default=None</em></strong></p>
 <p>Значения таргета <em>(Игнорируются трансформером)</em>.</p>
 </blockquote>
-<p>*<strong>Возвращает:</strong>*</p>
+<p><strong><em>Возвращает:</em></strong></p>
 <blockquote>
-<p><strong>X_compressed : *ndarray array of shape (n_samples, n_features_compressed)</strong>*</p>
+<p><strong>X_compressed : <em>ndarray array of shape (n_samples, n_features_compressed)</em></strong></p>
 <p>Преобразованный массив.</p>
 </blockquote>
 <hr/>
 <p><strong>get_feature_names_out(<em>input_features=None</em>)</strong></p>
 <p>Получить имена признаков, которые были получены для обучения трансформера.</p>
-<p>*<strong>Параметры:</strong>*</p>
+<p><strong><em>Параметры:</em></strong></p>
 <blockquote>
-<p><strong>input_features : *array-like of str or None, default=None</strong>*</p>
+<p><strong>input_features : <em>array-like of str or None, default=None</em></strong></p>
 <p>Названия признаков.</p>
-<p>Если <strong>input_features=*None</strong><em>, тогда </em><em>feature_names_in_</em>* будет использовать те имена, что были у признаков в входных данных. Если <strong>feature_names_in_</strong> не определен, тогда будут сгенерированы имена: <code>["col_0", "col_1", ..., "col_(n_features_in_ - 1)"]</code>.</p>
+<p>Если <strong>input_features=<em>None</em></strong>, тогда <strong>feature_names_in_</strong> будет использовать те имена, что были у признаков в входных данных. Если <strong>feature_names_in_</strong> не определен, тогда будут сгенерированы имена: <code>["col_0", "col_1", ..., "col_(n_features_in_ - 1)"]</code>.</p>
 <p>Если <strong>input_features</strong> является массивом, то длина <strong>input_features</strong> должна совпадать с длиной <strong>feature_names_in_</strong>, если <strong>feature_names_in_</strong> определен.</p>
 </blockquote>
-<p>*<strong>Возвращает:</strong>*</p>
+<p><strong><em>Возвращает:</em></strong></p>
 <blockquote>
-<p><strong>feature_names_out : *ndarray of str objects</strong>*</p>
+<p><strong>feature_names_out : <em>ndarray of str objects</em></strong></p>
 <p>То, что подается в входные данные.</p>
 </blockquote>
 <hr/>
 <p><strong>get_params(<em>deep=True</em>)</strong></p>
 <p>Параметры, которые были заданы при инициализации трансформера.</p>
-<p>*<strong>Параметры:</strong>*</p>
+<p><strong><em>Параметры:</em></strong></p>
 <blockquote>
-<p><strong>deep : *bool, default=True</strong>*</p>
-<p>Если *<strong>True</strong>*, вернет параметры для этого оценщика и содержащихся в нем подобъектов, которые являются оценщиками.</p>
+<p><strong>deep : <em>bool, default=True</em></strong></p>
+<p>Если <strong><em>True</em></strong>, вернет параметры для этого оценщика и содержащихся в нем подобъектов, которые являются оценщиками.</p>
 </blockquote>
-<p>*<strong>Возвращает:</strong>*</p>
+<p><strong><em>Возвращает:</em></strong></p>
 <blockquote>
-<p><strong>params : *dict</strong>*</p>
+<p><strong>params : <em>dict</em></strong></p>
 <p>Имена параметров, сопоставленные с их значениями.</p>
 </blockquote>
 <hr/>
 <p><strong>transform(<em>X</em>)</strong></p>
 <p>Преобразование данных.</p>
-<p>*<strong>Параметры:</strong>*</p>
+<p><strong><em>Параметры:</em></strong></p>
 <blockquote>
-<p><strong>X : *array-like, sparse matrix of shape (n_samples, n_features)</strong>*</p>
+<p><strong>X : <em>array-like, sparse matrix of shape (n_samples, n_features)</em></strong></p>
 <p>Входные данные для преобразования.</p>
 </blockquote>
-<p>*<strong>Возвращает:</strong>*</p>
+<p><strong><em>Возвращает:</em></strong></p>
 <blockquote>
-<p><strong>X_compressed : *ndarray array of shape (n_samples, n_features_compressed)</strong>*</p>
+<p><strong>X_compressed : <em>ndarray array of shape (n_samples, n_features_compressed)</em></strong></p>
 <p>Преобразованный массив.</p>
 </blockquote>
 </div>
