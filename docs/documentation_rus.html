@@ -7579,7 +7579,7 @@ $$
 f(x) = 
 \begin{cases}
 x, &amp; x \leq \text{threshold} \\
-\text{threshold} + (x - \text{threshold} - 1)^\text{coef} + 1 , &amp; x &gt; \text{threshold}
+\text{threshold} + (x - \text{threshold} + 1)^\text{coef} - 1 , &amp; x &gt; \text{threshold}
 \end{cases}
 $$<ul>
 <li><strong><code>'log'</code></strong> — логарифмическое преобразование значений;</li>
